@@ -4,7 +4,6 @@
 #include <iostream>
 #include <cmath>
 #include <QChar>
-#include <QDialog>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,6 +17,44 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+int MainWindow::getHex(int i)
+{
+    QByteArray Hex;
+    i++;
+    for(;i<ba.size();i++)
+    {
+        if((ba[i]>='0'&&ba[i]<='9')||(ba[i]>='A'&&ba[i]<='F'))
+        {
+            char x=ba[i];
+            Hex.append(x);
+        }
+        else break;
+    }
+    int trans=Hex.toInt(nullptr,16);
+    out.append(QString::number(trans));
+    i--;
+    return i;
+}
+
+int MainWindow::getBin(int i)
+{
+    QByteArray Bin;
+    i++;
+    for(;i<ba.size();i++)
+    {
+        if(ba[i]=='0'||ba[i]=='1')
+        {
+            char x=ba[i];
+            Bin.append(x);
+        }
+        else break;
+    }
+    int trans=Bin.toInt(nullptr,2);
+    out.append(QString::number(trans));
+    i--;
+    return i;
 }
 
 void MainWindow::getChar()
@@ -44,9 +81,18 @@ void MainWindow::getSuffix()
          out.append(str);
          i--;
       }
+      else if(ba[i]=='x')
+          i=getHex(i);
+      else if(ba[i]=='b')
+          i=getBin(i);
       else if(s1.isEmpty())//2,遇见非数字时, 如果堆栈为空，则直接把该字符放入堆栈
       {
-          s1.push(ba[i]);
+          if(ba[i]=='x')
+              i=getHex(i);
+          else if(ba[i]=='b')
+              i=getBin(i);
+          else
+              s1.push(ba[i]);
           if(ba[i]=='s'||ba[i]=='c'||ba[i]=='t'||ba[i]=='l')
               i=i+2;
       }
@@ -152,9 +198,7 @@ void MainWindow::Calc_Suffix()
           {
               int y=x;
               x=s2.pop();
-              int z=x;
-              for(int j=1;j<y;j++)
-                  x=x*z;
+              x=pow(x,y);
           }
           s2.push(x);
       }
@@ -346,8 +390,8 @@ void MainWindow::on_pushButton_24_clicked()//最小公倍数，c_mul
          else
             l1+=QString(x);
     }
-    int s1=l1.toInt(nullptr,10);
-    int s2=l2.toInt(nullptr,10);
+    int s1=l1.toInt();
+    int s2=l2.toInt();
     int max;
     if(s1>s2)
         max=s1;
@@ -382,8 +426,8 @@ void MainWindow::on_pushButton_25_clicked()//公约数,两个数以小数点分�
          else
             l1+=QString(x);
     }
-    int s1=l1.toInt(nullptr,10);
-    int s2=l2.toInt(nullptr,10);
+    int s1=l1.toInt();
+    int s2=l2.toInt();
     int max;
     if(s1>s2)
         max=s1;
@@ -410,6 +454,126 @@ void MainWindow::on_pushButton_27_clicked()
 {
     QString str=ui->lineEdit->text();
     ui->lineEdit->setText(QString("%1%2").arg(str).arg("log"));
+}
+
+void MainWindow::on_pushButton_28_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("b"));
+}
+
+void MainWindow::on_pushButton_29_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("x"));
+}
+
+void MainWindow::on_pushButton_30_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("A"));
+}
+
+void MainWindow::on_pushButton_31_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("B"));
+}
+
+void MainWindow::on_pushButton_32_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("C"));
+}
+
+void MainWindow::on_pushButton_33_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("D"));
+}
+
+void MainWindow::on_pushButton_34_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("E"));
+}
+
+void MainWindow::on_pushButton_35_clicked()
+{
+    QString str=ui->lineEdit->text();
+    ui->lineEdit->setText(QString("%1%2").arg(str).arg("F"));
+}
+
+void MainWindow::on_pushButton_36_clicked()
+{
+    QString str=ui->lineEdit->text();
+    QByteArray l1,l2;
+    l1.append('0');
+    l2.append('0');
+    QByteArray com = str.toLatin1();
+    bool hasSpace = false;
+    bool is_Hex1 = false;
+    bool is_Bin1 = false;
+    bool is_Hex2 = false;
+    bool is_Bin2 = false;
+    for(int i=0;i<com.size();i++)
+    {
+        char x=com[i];
+        if(x=='.')
+           hasSpace=true;
+        else if(x!='.'&&hasSpace)
+        {
+           if(x=='x')
+           {
+               is_Hex2 = true;
+           }
+           else if(x=='b')
+           {
+               is_Bin2 = true;
+           }
+           else
+               l2.append(x);
+        }
+        else
+        {
+            if(x=='x')
+            {
+                is_Hex1 = true;
+            }
+            else if(x=='b')
+            {
+                is_Bin1 = true;
+            }
+            else
+                l1.append(x);
+        }
+    }
+
+    int s1;
+    int s2;
+
+    if(is_Hex1)
+        s1 = l1.toInt(nullptr,16);
+    else if(is_Bin1)
+        s1 = l1.toInt(nullptr,2);
+    else
+        s1 = l1.toInt();
+
+    if(is_Hex2)
+        s2 = l2.toInt(nullptr,16);
+    else if(is_Bin2)
+        s2 = l2.toInt(nullptr,2);
+    else
+        s2 = l2.toInt();
+
+    qDebug() << s1 << " "  <<s2;
+
+    if(s1>s2)
+        ui->lineEdit->setText(QString("%1%2").arg(str).arg("大于"));
+    else if(s1==s2)
+        ui->lineEdit->setText(QString("%1%2").arg(str).arg("等于"));
+    else
+        ui->lineEdit->setText(QString("%1%2").arg(str).arg("小于"));
 }
 
 

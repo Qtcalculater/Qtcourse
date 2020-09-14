@@ -14,6 +14,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    int getHex(int);
+    int getBin(int);
     void getChar();//将QString转换为QByteArray
     void getSuffix();//获取后缀表达式
     void Calc_Suffix();//计算后缀表达式
@@ -26,7 +28,7 @@ private:
     QStack<char> s1;//中缀表达式转换为后缀表达式时用到的栈
     QVector<QString> out;//后缀表达式
     QStack<double> s2;//后缀表达式计算结果时用到的栈
-    float result;//计算结果
+    double result;//计算结果
 
 private slots:
     void on_pushButton_clicked();
@@ -76,6 +78,15 @@ private slots:
     void on_pushButton_25_clicked();
     void on_pushButton_26_clicked();
     void on_pushButton_27_clicked();
+    void on_pushButton_28_clicked();
+    void on_pushButton_29_clicked();
+    void on_pushButton_30_clicked();
+    void on_pushButton_31_clicked();
+    void on_pushButton_32_clicked();
+    void on_pushButton_33_clicked();
+    void on_pushButton_34_clicked();
+    void on_pushButton_35_clicked();
+    void on_pushButton_36_clicked();
 
 };
 
