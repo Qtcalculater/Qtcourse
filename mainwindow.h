@@ -19,7 +19,7 @@ public:
     void getChar();//将QString转换为QByteArray
     void getSuffix();//获取后缀表达式
     void Calc_Suffix();//计算后缀表达式
-    void m_init();//初始化
+    void init();//初始化
 
 private:
     Ui::MainWindow *ui;

@@ -62,6 +62,8 @@ void MainWindow::getChar()
     ba=in.toLatin1();
 }
 
+//优先级：^ > sctl > */ > +-
+
 void MainWindow::getSuffix()
 {
   for(int i=0;i<ba.size();i++)
@@ -81,15 +83,15 @@ void MainWindow::getSuffix()
          out.append(str);
          i--;
       }
-      else if(ba[i]=='x')
+      else if(ba[i]=='x')//得到十六进制的字符串
           i=getHex(i);
-      else if(ba[i]=='b')
+      else if(ba[i]=='b')//得到二进制的字符串
           i=getBin(i);
       else if(s1.isEmpty())//2,遇见非数字时, 如果堆栈为空，则直接把该字符放入堆栈
       {
           if(ba[i]=='x')
               i=getHex(i);
-          else if(ba[i]=='b')
+          else if(ba[i]=='b')//遇到不同进制，则先转换为十进制，放入栈中
               i=getBin(i);
           else
               s1.push(ba[i]);
@@ -97,7 +99,7 @@ void MainWindow::getSuffix()
               i=i+2;
       }
       else if(ba[i]=='+' || ba[i]=='-')
-          //2.1,如果是+或- 那么遍历堆栈栈顶元素 一直输出优先级>=加减的 即输出栈顶的+-*/,
+          //2.1,如果是+或- 那么遍历堆栈栈顶元素 一直输出优先级>=加减的 即输出栈顶的+-*/sctl^,
           //当遇到其他字符时（如左括号）或堆栈空时break
       {
           while(!s1.empty()){
@@ -110,7 +112,7 @@ void MainWindow::getSuffix()
           s1.push(ba[i]);
       }
       else if(ba[i]=='*' || ba[i]=='/')
-          //2.2,如果是*或/ 那么遍历堆栈栈顶元素 一直输出优先级>=乘除的 即输出栈顶的*/,
+          //2.2,如果是*或/ 那么遍历堆栈栈顶元素 一直输出优先级>=乘除的 即输出栈顶的*/sctl^,
           //当遇到其他字符时（如左括号，减号，除号）或堆栈空时break
       {
           while(!s1.empty()){
@@ -123,6 +125,8 @@ void MainWindow::getSuffix()
           s1.push(ba[i]);
       }
       else if(ba[i]=='s'||ba[i]=='c'||ba[i]=='t')
+          //2.3,如果是s或c或t 那么遍历堆栈栈顶元素 一直输出优先级>=sct的 即输出栈顶的*/sctl^,
+          //当遇到其他字符时（如左括号，减号，除号）或堆栈空时break
       {
           while(!s1.empty()){
               if(s1.top()=='s'||s1.top()=='c'||s1.top()=='t'||s1.top()=='^'||s1.top()=='l'){
@@ -134,6 +138,8 @@ void MainWindow::getSuffix()
           s1.push(ba[i]);
       }
       else if(ba[i]=='^')
+          //2.4,如果是^ 那么遍历堆栈栈顶元素 一直输出优先级>=^的 即输出栈顶的^,
+          //当遇到其他字符时（如左括号，减号，除号）或堆栈空时break
       {
           while(!s1.empty()){
               if(s1.top()=='^'){
@@ -222,7 +228,7 @@ void MainWindow::Calc_Suffix()
   qDebug()<<result;
 }
 
-void MainWindow::m_init()
+void MainWindow::init()
 {
     ba.clear();
     out.clear();
@@ -235,8 +241,8 @@ void MainWindow::on_pushButton_clicked()
     getSuffix();
     Calc_Suffix();
     ui->lineEdit->clear();//清空文本编辑框
-    ui->lineEdit->setText(QString("%1%2").arg('=').arg(result));//显示结果
-    m_init();
+    ui->lineEdit->setText(QString("%1").arg(result));//显示结果
+    init();
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -345,7 +351,7 @@ void MainWindow::on_pushButton_16_clicked()
 {
     //清空所有内容，并初始化
     ui->lineEdit->clear();
-    m_init();
+    init();
 }
 
 void MainWindow::on_pushButton_17_clicked()
@@ -520,7 +526,7 @@ void MainWindow::on_pushButton_36_clicked()
     {
         char x=com[i];
         if(x=='.')
-           hasSpace=true;
+            hasSpace=true;
         else if(x!='.'&&hasSpace)
         {
            if(x=='x')
@@ -574,6 +580,7 @@ void MainWindow::on_pushButton_36_clicked()
         ui->lineEdit->setText(QString("%1%2").arg(str).arg("等于"));
     else
         ui->lineEdit->setText(QString("%1%2").arg(str).arg("小于"));
+
 }
 
 
